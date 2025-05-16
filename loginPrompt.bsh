@@ -1,10 +1,18 @@
 #!/bin/bash
 
-echo "Introduceti username-ul: "
-read username
+until [ -n "$username" ]
+do
+	read -p "Introduceti username-ul: " username
+	if grep -q "^$username," parole.csv; then
+		echo "Utilizatorul $username exista deja."
+		unset username
+	elif [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
+		echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
+		unset username
+	fi
+done
 
-echo "Introduceti email-ul: "
-read email
+read -p "Introduceti email-ul: " email
 
 read -s -p "Introduceti parola: " password
 echo ""
@@ -14,6 +22,8 @@ hashedPassword=$(echo -n "$password" | sha256sum | sed 's/ .*//') #sed sterge sp
 
 sleep 2 && echo "parola criptata: $hashedPassword"
 
-echo "$username,$email,$hashedPassword" >> parole.csv
+userID=$(uuidgen)
 
+echo "$username, $email, $userID, $hashedPassword" >> parole.csv
 
+echo "Utilizatorul $username a fost inregistrat cu succes."
