@@ -1,1 +1,13 @@
 bagati in fisierul asta orice comentariu si dati commit pe github ca sa apara ca un update nou si sa va familiarizati cu comenzile
+
+update duminica:
+am facut login si signup sa mearga, scripturile sunt apelate din meniu.bsh, daca vreti sa rulati trebuie sa dati "source meniu.bsh"
+
+datele userilor sunt stocate in users.csv, mai trebuie adaugat si ID unic autogenerat (asa zicea Gheorghe pe platforma)
+
+scriptul creeaza/navigheaza in directorul fiecarui user (users/username/home), dar trebuie sa il facem sa nu poata fi accesat de alti
+useri in afara de cel ce la creat
+ 
+mai trebuie adaugat si raportul ala cu date despre utilizator si functia de sendmail
+
+daca facem toate astea saptamana asta suntem super ok

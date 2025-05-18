@@ -1,0 +1,39 @@
+#!/bin/bash
+
+USERS="users.csv"
+username=$1
+USER_HOME="./users/$username/home"
+
+checkEmail() {
+   read -p "Introduceti email-ul: " email
+   if cut -d',' -f2  "$USERS" | grep -qx "$email"; then
+	echo "Email-ul este deja folosit pentru un alt cont"
+	echo "Incercati din nou cu un alt email"
+	sleep 2 && checkEmail
+   fi
+}
+
+checkPassword() {
+   read -s -p "Introduceti parola: " password
+   echo ""
+   read -s -p "Introduceti parola din nou: " password2
+   echo ""
+
+   if [ "$password" != "$password2" ]; then
+	echo "Parolele nu coincid. Va rog incercati din nou"
+	sleep 2 && checkPassword
+   fi
+}
+
+checkEmail
+checkPassword
+
+hashedPassword=$(echo -n "$password" | sha256sum | sed 's/ .*//') #sed sterge spatiile albe si ce mai era dupa valoarea hash efectiva
+echo "$username,$email,$hashedPassword" >> "$USERS"
+echo "Contul a fost creat cu username-ul $username si email-ul $email"
+echo ""
+
+mkdir -p "$USER_HOME"
+cd "$USER_HOME"
+
+sleep 2 && echo "Acum te afli in directorul $(pwd)"
