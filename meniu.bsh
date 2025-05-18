@@ -1,0 +1,25 @@
+#!/bin/bash
+
+USERS="users.csv"
+read -p "Introduceti username-ul: " username
+echo "Bine ai venit, $username"
+
+if grep -q "^$username," "$USERS"; then
+   echo "Deja exista un cont cu acest username."
+   sleep 1 && read -p "Doresti sa te loghezi? (y/n) " option
+   if [ "${option,,}" == "y" ]; then #{} si ,, convertesc tot textul la litere mici
+	source login.bsh "$username"
+   else
+	echo "Programul se va inchide. La revedere!"
+	exit 1
+   fi
+else
+   echo "Nu am gasit niciun cont cu acest username."
+   sleep 1 && read -p "Doresti sa iti creezi un cont nou? (y/n) " opt
+   if [ "${opt,,}" == "y" ]; then
+	source signup.bsh "$username"
+   else
+	echo "Programul se va inchide. La revedere!"
+	exit 1
+   fi
+fi

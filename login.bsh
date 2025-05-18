@@ -1,0 +1,33 @@
+#!/bin/bash
+
+USERS="users.csv"
+username=$1
+USER_HOME="./users/$username/home"
+
+checkEmail() {
+   read -p "Introduceti email-ul: " email
+   if ! cut -d',' -f2 "$USERS" | grep -qx "$email"; then
+	echo "Acest email nu este asociat cu un cont existent, incercati alt email."
+	sleep 2 && checkEmail
+   elif  ! grep -Eq "^${username},${email}," "$USERS"; then
+	echo "Aceasta combinatie de email si username nu este valida, te rog sa incerci din nou."
+	sleep 2 && checkEmail
+   fi
+}
+
+checkPassword() {
+   read -s -p "Introduceti parola: " password
+   echo ""
+   hashPass=$(echo -n "$password" | sha256sum | sed 's/ .*//')
+   if ! cut -d',' -f3 "$USERS" | grep -qx "$hashPass"; then
+	echo "Parola gresita. Incercati din nou."
+	sleep 2 && checkPassword
+   fi
+}
+
+checkEmail
+checkPassword
+
+cd "$USER_HOME"
+echo "Autentificarea s-a finalizat cu succes!"
+echo "Acum te afli in directorul $(pwd)"
