@@ -34,3 +34,5 @@ sed -i "s|^\($username,[^,]*,[^,]*,[^,]*,\).*|\1$last_login|" "$USERS"
 cd "$USER_HOME"
 echo "Autentificarea s-a finalizat cu succes!"
 echo "Acum te afli in directorul $(pwd)"
+
+unset username

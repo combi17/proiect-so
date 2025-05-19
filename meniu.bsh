@@ -2,7 +2,14 @@
 
 logged_in_users=()
 USERS="users.csv"
-read -p "Introduceti username-ul: " username
+while [ -z "$username" ]
+do
+        read -p "Introduceti username-ul: " username
+        if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
+                echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
+                unset username
+        fi
+done
 echo "Bine ai venit, $username"
 
 if grep -q "^$username," "$USERS"; then
@@ -12,15 +19,15 @@ if grep -q "^$username," "$USERS"; then
 	source login.bsh "$username"
    else
 	echo "Programul se va inchide. La revedere!"
-	exit 1
+	unset username
    fi
 else
-   echo "Nu am gasit niciun cont cu acest username."
-   sleep 1 && read -p "Doresti sa iti creezi un cont nou? (y/n) " opt
-   if [ "${opt,,}" == "y" ]; then
-	source signup.bsh "$username"
-   else
-	echo "Programul se va inchide. La revedere!"
-	exit 1
-   fi
+    echo "Nu am gasit niciun cont cu acest username."
+    sleep 1 && read -p "Doresti sa iti creezi un cont nou? (y/n) " opt
+    if [ "${opt,,}" == "y" ]; then
+ 	source signup.bsh "$username"
+    else
+  	echo "Programul se va inchide. La revedere!"
+	unset username
+    fi
 fi
