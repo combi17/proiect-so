@@ -3,6 +3,7 @@
 USERS="users.csv"
 username=$1
 USER_HOME="./users/$username/home"
+last_login=$(date '+%Y-%m-%d %H:%M:%S')
 
 checkEmail() {
    read -p "Introduceti email-ul: " email
@@ -27,6 +28,8 @@ checkPassword() {
 
 checkEmail
 checkPassword
+logged_in_users+=("$username")
+sed -i "s|^\($username,[^,]*,[^,]*,[^,]*,\).*|\1$last_login|" "$USERS"
 
 cd "$USER_HOME"
 echo "Autentificarea s-a finalizat cu succes!"

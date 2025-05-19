@@ -1,5 +1,6 @@
 #!/bin/bash
 
+logged_in_users=()
 USERS="users.csv"
 read -p "Introduceti username-ul: " username
 echo "Bine ai venit, $username"
