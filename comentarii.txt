@@ -11,3 +11,7 @@ useri in afara de cel ce la creat
 mai trebuie adaugat si raportul ala cu date despre utilizator si functia de sendmail
 
 daca facem toate astea saptamana asta suntem super ok
+
+update scurt:
+am adaugat conditia de verificare la nume si email. de asemenea, am rezolvat o problema ca, atunci cand se termina de executat source login sau signup, 
+la urmatoarea executare source meniu, folosea username ul anterior. 
