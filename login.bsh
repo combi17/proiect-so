@@ -28,6 +28,7 @@ checkPassword() {
 
 checkEmail
 checkPassword
+
 logged_in_users+=("$username")
 sed -i "s|^\($username,[^,]*,[^,]*,[^,]*,\).*|\1$last_login|" "$USERS"
 

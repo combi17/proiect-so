@@ -11,7 +11,9 @@ checkEmail() {
 	echo "Email-ul este deja folosit pentru un alt cont"
 	echo "Incercati din nou cu un alt email"
 	sleep 2 && checkEmail
-   elif [[ ! "$email" =~ ^[^@]*@[^@]*$ ]] || [[ ! "$email" =~ @.*\..* ]]; then
+   fi
+
+   if [[ ! "$email" =~ ^[^@]*@[^@]*$ ]] || [[ ! "$email" =~ @.*\..* ]]; then
 	echo "Email invalid. Va rog incercati din nou cu un alt email."
 	sleep 2 && checkEmail
    fi
