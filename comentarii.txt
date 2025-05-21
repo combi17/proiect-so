@@ -15,3 +15,7 @@ daca facem toate astea saptamana asta suntem super ok
 update scurt:
 am adaugat conditia de verificare la nume si email. de asemenea, am rezolvat o problema ca, atunci cand se termina de executat source login sau signup, 
 la urmatoarea executare source meniu, folosea username ul anterior. 
+
+update:
+Am adaugat un script care genereaza rapoarte pentru un utilizator sau toti. Am modificat si meniul unde acum ai 4 optiuni de selectat (logare, inregistrare, generare raport si iesire).
+

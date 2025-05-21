@@ -1,9 +1,27 @@
 #!/bin/bash
 
 USERS="users.csv"
-username=$1
-USER_HOME="./users/$username/home"
 userID=$(uuidgen)
+
+read -p "Introduceti username-ul: " username
+if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
+        echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
+        source signup.bsh
+	return
+fi
+
+if grep -q "^$username," "$USERS"; then
+   echo "Deja exista un cont cu acest username."
+   sleep 1 && read -p "Doresti sa te loghezi? (y/n) " option
+   if [ "${option,,}" == "y" ]; then #{} si ,, convertesc tot textul la litere mici
+        source login.bsh
+	return
+   else
+        echo "Incercati un alt nume de utilizator."
+        sleep 1 && source signup.bsh
+	return
+   fi
+fi
 
 checkEmail() {
    read -p "Introduceti email-ul: " email
@@ -42,9 +60,8 @@ echo "$username,$email,$hashedPassword,$userID,$last_login" >> "$USERS"
 echo "Contul a fost creat cu username-ul $username si email-ul $email"
 echo ""
 
+USER_HOME="./users/$username/home"
 mkdir -p "$USER_HOME"
 cd "$USER_HOME"
 
 sleep 2 && echo "Acum te afli in directorul $(pwd)"
-
-unset username

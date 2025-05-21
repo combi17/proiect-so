@@ -1,33 +1,22 @@
 #!/bin/bash
 
 logged_in_users=()
-USERS="users.csv"
-while [ -z "$username" ]
-do
-        read -p "Introduceti username-ul: " username
-        if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
-                echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
-                unset username
-        fi
-done
-echo "Bine ai venit, $username"
 
-if grep -q "^$username," "$USERS"; then
-   echo "Deja exista un cont cu acest username."
-   sleep 1 && read -p "Doresti sa te loghezi? (y/n) " option
-   if [ "${option,,}" == "y" ]; then #{} si ,, convertesc tot textul la litere mici
-	source login.bsh "$username"
-   else
-	echo "Programul se va inchide. La revedere!"
-	unset username
-   fi
-else
-    echo "Nu am gasit niciun cont cu acest username."
-    sleep 1 && read -p "Doresti sa iti creezi un cont nou? (y/n) " opt
-    if [ "${opt,,}" == "y" ]; then
- 	source signup.bsh "$username"
-    else
-  	echo "Programul se va inchide. La revedere!"
-	unset username
-    fi
+echo -e "Bine ai venit! Alege unul dintre cele trei numere:\n"
+echo -e "1. Conecteazate\n2. Inregistreazate\n3. Genereaza un raport\n4. Iesire\n"
+read -p "Optiune: " opt
+
+if [ "$opt" == "1" ]; then
+   source login.bsh
 fi
+if [ "$opt" == "2" ]; then
+   source signup.bsh
+fi
+if [ "$opt" == "3" ]; then
+   source raport.bsh
+fi
+if [ "$opt" == "4" ]; then
+   echo "Programul se va inchide. La revedere!"
+fi
+
+

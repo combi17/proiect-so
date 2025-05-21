@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set +m # dezactivează un mesaj care apare din cauza executiei asincron in source
+
+USERS="users.csv"
+
+genereaza_raport() {
+    USER_HOME="./users/$1/home"
+    timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
+    raport_file="$USER_HOME/raport_$timestamp.txt"
+
+    files_count=$(find "$USER_HOME" -type f | wc -l)
+    dir_count=$(find "./users/$1" -type d | wc -l)
+    size_on_disk=$(du -sh "$USER_HOME" | cut -f1)
+    {
+        echo "Data generarii: $(date)"
+        echo "Numar de fisiere: $files_count"
+        echo "Numar de directoare: $dir_count"
+        echo "Dimensiune totala ocupata: $size_on_disk"
+    } > "$raport_file"
+    sleep 1
+    echo -e "\nRaportul pentru $username a fost generat."
+}
+
+read -p "Introduceti numele utilizatorului sau 'toti' pentru a genera raportul: " username
+if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
+        echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
+        source raport.bsh
+fi
+
+if [ "${username,,}" == "toti" ]; then
+    sleep 1 && echo "Generarea rapoartelor pentru toti utilizatorii a inceput."
+    cut -d',' -f1 "$USERS" | while read username; do
+        genereaza_raport "$username" &
+    done
+elif grep -q "^$username," "$USERS"; then
+    sleep 1 && echo "Generarea raportului pentru '$username' a inceput." 
+    genereaza_raport "$username" &
+else
+    echo "Utilizatorul '$username' nu exista in registru $USERS."
+    source raport.bsh
+    return
+fi
+
