@@ -2,7 +2,7 @@
 
 USERS="users.csv"
 last_login=$(date '+%Y-%m-%d %H:%M:%S')
-logged_in="./proiectSO/logged_in_users.bsh"
+logged_in="$HOME/proiectSO/logged_in_users.bsh"
 
 checkUser() {
 read -p "Introduceti username-ul: " username
