@@ -24,10 +24,11 @@ genereaza_raport() {
     echo -e "\nRaportul pentru $username a fost generat."
 }
 
+checkUser() {
 read -p "Introduceti numele utilizatorului sau 'toti' pentru a genera raportul: " username
 if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
-        echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
-        source raport.bsh
+        echo "Username-ul poate contine doar litere, cifre si underscore fara spatii. Incercati din nou."
+        sleep 1 && checkUser
 fi
 
 if [ "${username,,}" == "toti" ]; then
@@ -39,7 +40,9 @@ elif grep -q "^$username," "$USERS"; then
     sleep 1 && echo "Generarea raportului pentru '$username' a inceput." 
     genereaza_raport "$username" &
 else
-    echo "Utilizatorul '$username' nu exista in registru $USERS."
-    source raport.bsh
+    echo "Utilizatorul '$username' nu exista in registru $USERS. Incercati alt username."
+    sleep 1 && checkUser
 fi
+}
 
+checkUser
