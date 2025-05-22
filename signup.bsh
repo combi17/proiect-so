@@ -55,8 +55,9 @@ checkEmail
 checkPassword
 
 hashedPassword=$(echo -n "$password" | sha256sum | sed 's/ .*//') #sed sterge spatiile albe si ce mai era dupa valoarea hash efectiva
-echo "\"$username\"" >> logged_in_users.bsh
 last_login=$(date '+%Y-%m-%d %H:%M:%S')
+
+echo "\"$username\"" >> "./proiectSO/logged_in_users.bsh"
 
 echo "$username,$email,$hashedPassword,$userID,$last_login" >> "$USERS"
 echo "Contul a fost creat cu username-ul $username si email-ul $email"
