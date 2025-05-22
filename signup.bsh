@@ -3,11 +3,11 @@
 USERS="users.csv"
 userID=$(uuidgen)
 
+checkUser() {
 read -p "Introduceti username-ul: " username
 if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
         echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
-        source signup.bsh
-	return
+        sleep 2 && checkUser
 fi
 
 if grep -q "^$username," "$USERS"; then
@@ -18,10 +18,11 @@ if grep -q "^$username," "$USERS"; then
 	return
    else
         echo "Incercati un alt nume de utilizator."
-        sleep 1 && source signup.bsh
+        sleep 2 && checkUser
 	return
    fi
 fi
+}
 
 checkEmail() {
    read -p "Introduceti email-ul: " email
@@ -49,11 +50,12 @@ checkPassword() {
    fi
 }
 
+checkUser
 checkEmail
 checkPassword
 
 hashedPassword=$(echo -n "$password" | sha256sum | sed 's/ .*//') #sed sterge spatiile albe si ce mai era dupa valoarea hash efectiva
-logged_in_users+=("$username")
+echo "\"$username\"" >> logged_in_users.bsh
 last_login=$(date '+%Y-%m-%d %H:%M:%S')
 
 echo "$username,$email,$hashedPassword,$userID,$last_login" >> "$USERS"
@@ -65,3 +67,4 @@ mkdir -p "$USER_HOME"
 cd "$USER_HOME"
 
 sleep 2 && echo "Acum te afli in directorul $(pwd)"
+

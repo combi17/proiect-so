@@ -1,9 +1,7 @@
 #!/bin/bash
 
-logged_in_users=()
-
-echo -e "Bine ai venit! Alege unul dintre cele trei numere:\n"
-echo -e "1. Conecteazate\n2. Inregistreazate\n3. Genereaza un raport\n4. Iesire\n"
+echo -e "Bine ai venit! Alege o optiune:\n"
+echo -e "1. Conecteaza-te\n2. Inregistreaza-te\n3. Genereaza un raport\n4. Iesire\n"
 read -p "Optiune: " opt
 
 if [ "$opt" == "1" ]; then

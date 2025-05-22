@@ -2,26 +2,27 @@
 
 USERS="users.csv"
 last_login=$(date '+%Y-%m-%d %H:%M:%S')
+logged_in="logged_in_users.bsh"
 
+checkUser() {
 read -p "Introduceti username-ul: " username
 if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
         echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
-        source login.bsh
-	return
+	sleep 2 && checkUser
 fi
 
 if ! grep -q "^$username," "$USERS"; then
    echo "Nu exista un cont cu acest username."
    sleep 1 && read -p "Doresti sa te inregistrezi? (y/n) " option
    if [ "${option,,}" == "y" ]; then #{} si ,, convertesc tot textul la litere mici
-        source signup.bsh
+        sleep 2 && source signup.bsh
 	return
    else
         echo "Incercati un alt nume de utilizator."
-        sleep 1 && source login.bsh
-	return
+        sleep 2 && checkUser
    fi
 fi
+}
 
 checkEmail() {
    read -p "Introduceti email-ul: " email
@@ -44,13 +45,24 @@ checkPassword() {
    fi
 }
 
+checkUser
 checkEmail
 checkPassword
 
-logged_in_users+=("$username")
-sed -i "s|^\($username,[^,]*,[^,]*,[^,]*,\).*|\1$last_login|" "$USERS"
-
 USER_HOME="./users/$username/home"
-cd "$USER_HOME"
-echo "Autentificarea s-a finalizat cu succes!"
-echo "Acum te afli in directorul $(pwd)"
+
+if ! grep -Fxq "\"$username\"" "$logged_in"; then
+   echo "\"$username\"" >> "$logged_in"
+
+   sed -i "s|^\($username,[^,]*,[^,]*,[^,]*,\).*|\1$last_login|" "$USERS"
+
+   cd "$USER_HOME"
+   echo "Autentificarea s-a finalizat cu succes!"
+   echo "Acum te afli in directorul $(pwd)"
+
+else
+   echo "Utilizatorul $username este deja autentificat"
+   echo "Programul va naviga catre $USER_HOME"
+   sleep 2 && cd "$USER_HOME"
+fi
+

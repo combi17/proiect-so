@@ -7,7 +7,8 @@ USERS="users.csv"
 genereaza_raport() {
     USER_HOME="./users/$1/home"
     timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
-    raport_file="$USER_HOME/raport_$timestamp.txt"
+    raport_file="$USER_HOME/raport_$1.txt"
+    touch "$raport_file"
 
     files_count=$(find "$USER_HOME" -type f | wc -l)
     dir_count=$(find "./users/$1" -type d | wc -l)
@@ -17,7 +18,8 @@ genereaza_raport() {
         echo "Numar de fisiere: $files_count"
         echo "Numar de directoare: $dir_count"
         echo "Dimensiune totala ocupata: $size_on_disk"
-    } > "$raport_file"
+	echo ""
+    } | cat - "$raport_file" > temp && mv temp "$raport_file"
     sleep 1
     echo -e "\nRaportul pentru $username a fost generat."
 }
@@ -39,6 +41,5 @@ elif grep -q "^$username," "$USERS"; then
 else
     echo "Utilizatorul '$username' nu exista in registru $USERS."
     source raport.bsh
-    return
 fi
 
