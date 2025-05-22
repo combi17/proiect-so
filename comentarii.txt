@@ -21,3 +21,31 @@ Am adaugat un script care genereaza rapoarte pentru un utilizator sau toti. Am m
 
 update:
 am adaugat logout, trebuie apelat cu source logmeout cand esti in directorul users/username/home
+
+update:
+am reusit sa fac server de smtp. cand iti creezi contu, va trimite un mail ca s a creat cu succes sau ca nu s a putut. adresa nu e de gmail, deci, prima data cand vei primi mail de la adresa asta, va intra in spam.
+
+ca sa va mearga smtp:
+
+1. sudo apt install msmtp msmtp-mta
+
+2. nano ~/.msmtprc
+
+3. asta e textu pe care trebuie sa l puneti in ~/.msmtprc
+
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile        ~/.msmtp.log
+
+account gmx
+host smtp.gmx.com
+port 587
+from proiect.so@gmx.com
+user proiect.so@gmx.com
+password "proiectso"
+
+account default : gmx
+
+4. chmod 600 ~/.msmtprc
