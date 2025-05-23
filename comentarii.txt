@@ -49,3 +49,30 @@ password "proiectso"
 account default : gmx
 
 4. chmod 600 ~/.msmtprc
+
+
+update:
+
+detalii pentru comanda logmeout:
+1. mkdir -p /home/<username-ul vostru>/bin ,unde username-ul vostru e username-ul de la WSL
+
+2. ln -s /home/<usernameWSL>/proiectSO/logout.bsh /home/<usernameWSL>/bin/logmeout  ,daca ati folosit alte combinatii de directoare, 
+luati path-ul intreg (cel cu home/usernameWSL, nu cu "~") catre scriptul de logout si bin, tineti cont neaparat de cum au fost numite, 
+adica prima oara logout.bsh este scriptul care se apeleaza, iar logmeout e comanda pe care vrei sa o creezi 
+
+3. chmod +x /home/<usernameWSL>/proiectSO/logout.bsh (verificati ca script-ul e executabil), puneti path-ul corespunzator pt voi, ca primul de mai sus
+
+4. dati nano /home/<usernameWSL>/.bashrc si adaugati la FINAL exact linia asta: export PATH="$HOME/bin:$PATH"
+salvati si iesiti
+
+5. dupa ce ati iesit ca sa se salveze tot rulati comanda: source ~/.bashrc	
+
+6. acum totul ar trebui sa fie gata si scriptul logout.bsh este apelabil din orice director
+
+totusi, apelati-l doar cand aveti un user care este logat, verificati in ~/proiectSO cu "cat logged_in_users.bsh",
+si sunteti in directorul sau, ex: ~/proiectSO/users/vlad/home
+doar aici o sa functioneze scriptul, din cauza logicii pe care am implementat-o
+
+7. SCRIPTUL SE APELEAZA CU SOURCE (ptc vrem sa navigheze programul catre directorul parinte)
+
+COMANDA: source logmeout
