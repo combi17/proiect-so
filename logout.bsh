@@ -1,0 +1,25 @@
+#!/bin/bash
+
+current_path="$(pwd)"
+username=$(echo "$current_path" | sed -n 's|.*/users/\([^/]*\)/home.*|\1|p')
+proiect_dir=$(echo "$current_path" | sed -n 's|\(.*\)/users/.*|\1|p')
+logged_in_file="$proiect_dir/logged_in_users.bsh"
+
+if [ -z "$username" ]; then
+  echo "Nu va aflati in directorul 'home' al utilizatorului."
+  return
+fi
+
+if ! grep -Fxq "\"$username\"" "$logged_in_file"; then
+    echo "Nu sunteti autentificat."
+    echo "Programul va naviga catre $proiect_dir"
+    sleep 2 && cd "$proiect_dir"
+    return
+fi
+
+sed -i "/^\"$username\"$/d" "$logged_in_file"
+
+echo "Utilizatorul '$username' a fost delogat."
+
+sleep 1 && cd "$proiect_dir"
+echo "Ati fost mutat in directorul principal: $(pwd)"

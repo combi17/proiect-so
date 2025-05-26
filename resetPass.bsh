@@ -1,0 +1,80 @@
+#!/bin/bash
+
+current_path="$(pwd)"
+proiect_dir=$(echo "$current_path" | sed -n 's|\(.*\)/users/.*|\1|p')
+logged_in_file="$proiect_dir/logged_in_users.bsh"
+
+if [ -z "$proiect_dir" ]; then
+    USERS="users.csv"
+    read -p "Introduceti username-ul: " username
+elif ! grep -Fxq "\"$username\"" "$logged_in_file"; then
+    echo "Nu sunteti autentificat. Conectati va pentru a va putea reseta parola."
+    echo "Programul va naviga catre $proiect_dir"
+    sleep 2 && cd "$proiect_dir"
+    return
+else
+    USERS="$proiect_dir/users.csv"
+    username=$(echo "$current_path" | sed -n 's|.*/users/\([^/]*\)/home.*|\1|p')
+fi
+
+read -p "Introduceti adresa de email: " email
+
+generare_cod() {
+# Generează cod de verificare aleator (6 cifre)
+code=$(shuf -i 100000-999999 -n 1)
+
+if command -v msmtp >/dev/null 2>&1; then
+    msmtp "$email" <<EOF
+Subject: Resetare parola
+To: $email
+From: proiect.so@gmx.com
+
+Salut $username,
+
+Ati solicitat resetarea parolei. Folositi acest cod pentru a continua: $code
+
+EOF
+else
+    echo "Emailul nu a putut fi trimis."
+    echo "Codul pentru resetarea parolei: $code"
+fi
+}
+
+verificare_cod() {
+read -p "Introduceți codul primit pe email: " input_code
+
+if [ "$input_code" != "$code" ]; then
+    echo "Codul introdus este incorect."
+    read -p "Doriti trimiterea unui alt cod? (y/n): " opt
+    if [ "${opt,,}" == "y" ]; then
+	sleep 1 && echo "A fost trimis un nou cod pentru verificare."
+	generare_cod
+	verificare_cod
+    else
+	sleep 1 && echo "Incercati din nou introducerea codului."
+	verificare_cod
+    fi
+fi
+}
+
+checkPassword() {
+read -sp "Introduceti parola noua: " password
+echo ""
+read -sp "Confirmati parola noua: " password2
+echo ""
+
+if [ "$password" != "$password2" ]; then
+  echo "Parolele nu coincid."
+  sleep 1 && checkPassword
+fi
+}
+
+generare_cod
+verificare_cod
+checkPassword
+
+hashedPassword=$(echo -n "$password" | sha256sum | sed 's/ .*//')
+
+sed -i "s/^\($username,[^,]*,\)[^,]*/\1$hashedPassword/" "$USERS"
+
+echo -e "Parola a fost resetată cu succes!\n"
