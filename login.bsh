@@ -2,7 +2,8 @@
 
 USERS="users.csv"
 last_login=$(date '+%Y-%m-%d %H:%M:%S')
-logged_in="$HOME/proiectSO/logged_in_users.bsh"
+logged_in="logged_in_users.bsh"
+incercari=0
 
 checkUser() {
 read -p "Introduceti username-ul: " username
@@ -40,29 +41,42 @@ checkPassword() {
    echo ""
    hashPass=$(echo -n "$password" | sha256sum | sed 's/ .*//')
    if ! cut -d',' -f3 "$USERS" | grep -qx "$hashPass"; then
-	echo "Parola gresita. Incercati din nou."
-	sleep 2 && checkPassword
+	if [ "$incercari" -lt 2 ]; then
+	    echo "Parola gresita. Incercati din nou."
+	    ((incercari++))
+	    sleep 2 && checkPassword
+	else
+	    read -p "Parola gresita. Doriti sa va resetati parola? (y/n): " opt
+	    if [ "${opt,,}" == "y" ]; then
+		sleep 1
+		source resetPass.bsh
+		return
+	    else
+		echo "Incercati din nou parola."
+                incercari=0
+		sleep 1 && checkPassword
+	    fi
+	fi
    fi
 }
 
 checkUser
 checkEmail
-checkPassword
 
 USER_HOME="./users/$username/home"
 
-if ! grep -Fxq "\"$username\"" "$logged_in"; then
-   echo "\"$username\"" >> "$logged_in"
-
-   sed -i "s|^\($username,[^,]*,[^,]*,[^,]*,\).*|\1$last_login|" "$USERS"
-
-   cd "$USER_HOME"
-   echo "Autentificarea s-a finalizat cu succes!"
-   echo "Acum te afli in directorul $(pwd)"
-
+if grep -Fxq "\"$username\"" "$logged_in"; then
+    echo "Utilizatorul $username este deja autentificat"
+    echo "Programul va naviga catre $USER_HOME"
+    sleep 2 && cd "$USER_HOME"
+    return
 else
-   echo "Utilizatorul $username este deja autentificat"
-   echo "Programul va naviga catre $USER_HOME"
-   sleep 2 && cd "$USER_HOME"
-fi
+    checkPassword
 
+    echo "\"$username\"" >> "$logged_in"
+    sed -i "s|^\($username,[^,]*,[^,]*,[^,]*,\).*|\1$last_login|" "$USERS"
+
+    cd "$USER_HOME"
+    echo "Autentificarea s-a finalizat cu succes!"
+    echo "Acum te afli in directorul $(pwd)"
+fi
