@@ -76,3 +76,30 @@ doar aici o sa functioneze scriptul, din cauza logicii pe care am implementat-o
 7. SCRIPTUL SE APELEAZA CU SOURCE (ptc vrem sa navigheze programul catre directorul parinte)
 
 COMANDA: source logmeout
+
+update:
+
+am adaugat resetarea parolei utilizatorului. aceasta se poate accessa fie cand utilizatorul greseste parola de 3 ori consecutiv si va primi un prompt, fie cand acesta se afla in directorul home al sau folosind comanda resetpass.
+Daca utilizatorul alege da, i se va cere numele si emailul dupa care ii va fi trimis un cod pe email pe care trebuie sa l introduca corect pentru a i permite sa si schimbe parola.
+In directorul home al utilizatorului, acesta poate sa si schimbe parola doar daca este conectat si apare in logged_in_users.
+Am mai modificat si cateva linii legate de calea absoluta, deoarece numele directorului in care se afla proiectul nu este la fel pentru toti, deci trebuie extras cand cineva ruleaza codul.
+
+detalii pentru comanda resetpass:
+1. mkdir -p /home/<username-ul vostru>/bin ,unde username-ul vostru e username-ul de la WSL
+
+2. ln -s /home/<usernameWSL>/proiectSO/resetPass.bsh /home/<usernameWSL>/bin/resetpass  ,daca ati folosit alte combinatii de directoare,
+luati path-ul intreg (cel cu home/usernameWSL, nu cu "~") catre scriptul de logout si bin, tineti cont neaparat de cum au fost numite,
+adica prima oara logout.bsh este scriptul care se apeleaza, iar logmeout e comanda pe care vrei sa o creezi
+
+3. chmod +x /home/<usernameWSL>/proiectSO/resetPass.bsh (verificati ca script-ul e executabil), puneti path-ul corespunzator pt voi, ca primul de mai sus
+
+4. acum totul ar trebui sa fie gata si scriptul logout.bsh este apelabil din orice director
+
+totusi, apelati-l doar cand aveti un user care este logat, verificati in ~/proiectSO cu "cat logged_in_users.bsh",
+si sunteti in directorul sau, ex: ~/proiectSO/users/vlad/home
+
+5. SCRIPTUL SE APELEAZA CU SOURCE (ptc vrem sa navigheze programul catre directorul parinte)
+-pasii ceilalti nu mai sunt necesari daca ati facut deja asta pentru comanda logmeout
+
+COMANDA: source resetpass
+
