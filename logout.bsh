@@ -1,0 +1,34 @@
+#!/bin/bash
+
+current_dir=$PWD
+username=$(basename "$(dirname "$current_dir")")
+users="$HOME/proiectSO/logged_in_users.bsh"
+
+logout() {
+   if grep -Fxq "\"$username\"" "$users"; then
+	grep -Fxv "\"$username\"" "$users" > "$users.tmp"
+	mv "$users.tmp" "$users"
+	echo "$username s-a deconectat. Programul va naviga catre directorul parinte."
+        cd
+	cd proiectSO
+   else
+	echo "$username nu era autentificat."
+   fi
+}
+
+read -p "Esti sigur ca vrei sa te deloghezi? (y/n) " option
+echo ""
+
+main() {
+if [ "${option,,}" == "y" ]; then
+   logout
+elif [ "${option,,}" == "n" ]; then
+   echo "Programul se va inchide"
+   sleep 2 && return 1
+else
+   echo "Optiune invalida. Alegeti y/n"
+   sleep 2 && main
+fi
+}
+
+main
