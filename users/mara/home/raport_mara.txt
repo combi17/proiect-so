@@ -1,0 +1,10 @@
+Data generarii: Thu May 22 09:34:32 EEST 2025
+Numar de fisiere: 2
+Numar de directoare: 2
+Dimensiune totala ocupata: 12K
+
+Data generarii: Thu May 22 09:34:07 EEST 2025
+Numar de fisiere: 2
+Numar de directoare: 2
+Dimensiune totala ocupata: 8.0K
+
