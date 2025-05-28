@@ -4,20 +4,29 @@ current_path="$(pwd)"
 proiect_dir=$(echo "$current_path" | sed -n 's|\(.*\)/users/.*|\1|p')
 logged_in_file="$proiect_dir/logged_in_users.bsh"
 
-if [ -z "$proiect_dir" ]; then
-    USERS="users.csv"
-    read -p "Introduceti username-ul: " username
-elif ! grep -Fxq "\"$username\"" "$logged_in_file"; then
-    echo "Nu sunteti autentificat. Conectati va pentru a va putea reseta parola."
-    echo "Programul va naviga catre $proiect_dir"
-    sleep 2 && cd "$proiect_dir"
-    return
-else
-    USERS="$proiect_dir/users.csv"
-    username=$(echo "$current_path" | sed -n 's|.*/users/\([^/]*\)/home.*|\1|p')
+checkUser() {
+read -p "Introduceti username-ul: " username
+if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
+        echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
+        sleep 2 && checkUser
 fi
 
-read -p "Introduceti adresa de email: " email
+if ! grep -q "^$username," "$USERS"; then
+   echo "Nu exista un cont cu acest username."
+   sleep 2 && checkUser
+fi
+}
+
+checkEmail() {
+   read -p "Introduceti email-ul: " email
+   if ! cut -d',' -f2 "$USERS" | grep -qx "$email"; then
+        echo "Acest email nu este asociat cu un cont existent, incercati alt email."
+        sleep 2 && checkEmail
+   elif  ! grep -Eq "^${username},${email}," "$USERS"; then
+        echo "Aceasta combinatie de email si username nu este valida, te rog sa incerci din nou."
+        sleep 2 && checkEmail
+   fi
+}
 
 generare_cod() {
 # Generează cod de verificare aleator (6 cifre)
@@ -69,6 +78,20 @@ if [ "$password" != "$password2" ]; then
 fi
 }
 
+if [ -z "$proiect_dir" ]; then
+    USERS="users.csv"
+    checkUser
+elif ! grep -Fxq "\"$username\"" "$logged_in_file"; then
+    echo "Nu sunteti autentificat. Conectati va pentru a va putea reseta parola."
+    echo "Programul va naviga catre $proiect_dir"
+    sleep 2 && cd "$proiect_dir"
+    return
+else
+    USERS="$proiect_dir/users.csv"
+    username=$(echo "$current_path" | sed -n 's|.*/users/\([^/]*\)/home.*|\1|p')
+fi
+
+checkEmail
 generare_cod
 verificare_cod
 checkPassword
