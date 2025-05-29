@@ -5,6 +5,14 @@ username=$(echo "$current_path" | sed -n 's|.*/users/\([^/]*\)/home.*|\1|p')
 proiect_dir=$(echo "$current_path" | sed -n 's|\(.*\)/users/.*|\1|p')
 logged_in_file="$proiect_dir/logged_in_users.bsh"
 
+read -p "Esti sigur ca vrei sa te deloghezi? (y/n)" opt
+
+if [ "${opt,,}" != "y" ]; then
+   echo "Programul se va inchide"
+   return
+fi
+
+
 if [ -z "$username" ]; then
   echo "Nu va aflati in directorul 'home' al utilizatorului."
   return

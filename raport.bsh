@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set +m # dezactivează un mesaj care apare din cauza executiei asincron in source
+set +m
 
 USERS="users.csv"
 
