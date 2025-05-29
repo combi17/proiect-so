@@ -29,7 +29,7 @@ checkEmail() {
 }
 
 generare_cod() {
-# Generează cod de verificare aleator (6 cifre)
+
 code=$(shuf -i 100000-999999 -n 1)
 
 if command -v msmtp >/dev/null 2>&1; then
@@ -82,7 +82,7 @@ if [ -z "$proiect_dir" ]; then
     USERS="users.csv"
     checkUser
 elif ! grep -Fxq "\"$username\"" "$logged_in_file"; then
-    echo "Nu sunteti autentificat. Conectati va pentru a va putea reseta parola."
+    echo "Nu sunteti autentificat. Conectati-va pentru a va putea reseta parola."
     echo "Programul va naviga catre $proiect_dir"
     sleep 2 && cd "$proiect_dir"
     return

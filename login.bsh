@@ -6,23 +6,23 @@ logged_in="logged_in_users.bsh"
 incercari=0
 
 checkUser() {
-read -p "Introduceti username-ul: " username
-if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
+   read -p "Introduceti username-ul: " username
+   if [[ ! "$username" =~ ^[a-zA-Z0-9_]+$ ]]; then
         echo "Username-ul poate contine doar litere, cifre si underscore fara spatii."
 	sleep 2 && checkUser
-fi
+   fi
 
-if ! grep -q "^$username," "$USERS"; then
+   if ! grep -q "^$username," "$USERS"; then
    echo "Nu exista un cont cu acest username."
    sleep 1 && read -p "Doresti sa te inregistrezi? (y/n) " option
-   if [ "${option,,}" == "y" ]; then #{} si ,, convertesc tot textul la litere mici
+      if [ "${option,,}" == "y" ]; then
         sleep 2 && source signup.bsh
 	return 1
-   else
+      else
         echo "Incercati un alt nume de utilizator."
         sleep 2 && checkUser
+      fi
    fi
-fi
 }
 
 checkEmail() {

@@ -13,7 +13,7 @@ fi
 if grep -q "^$username," "$USERS"; then
    echo "Deja exista un cont cu acest username."
    sleep 1 && read -p "Doresti sa te loghezi? (y/n) " option
-   if [ "${option,,}" == "y" ]; then #{} si ,, convertesc tot textul la litere mici
+   if [ "${option,,}" == "y" ]; then
         source login.bsh
 	return 1
    else
@@ -50,6 +50,8 @@ checkPassword() {
    fi
 }
 
+USER_HOME="./users/$username/home"
+
 checkUser
 
 if [ $? -eq 1 ]; then
@@ -59,7 +61,7 @@ fi
 checkEmail
 checkPassword
 
-hashedPassword=$(echo -n "$password" | sha256sum | sed 's/ .*//') #sed sterge spatiile albe si ce mai era dupa valoarea hash efectiva
+hashedPassword=$(echo -n "$password" | sha256sum | sed 's/ .*//')
 last_login=$(date '+%Y-%m-%d %H:%M:%S')
 
 echo "\"$username\"" >> "logged_in_users.bsh"
@@ -86,7 +88,6 @@ else
     echo "Emailul nu a putut fi trimis."
 fi
 
-USER_HOME="./users/$username/home"
 mkdir -p "$USER_HOME"
 cd "$USER_HOME"
 
