@@ -17,7 +17,7 @@ if ! grep -q "^$username," "$USERS"; then
    sleep 1 && read -p "Doresti sa te inregistrezi? (y/n) " option
    if [ "${option,,}" == "y" ]; then #{} si ,, convertesc tot textul la litere mici
         sleep 2 && source signup.bsh
-	return
+	return 1
    else
         echo "Incercati un alt nume de utilizator."
         sleep 2 && checkUser
@@ -61,6 +61,11 @@ checkPassword() {
 }
 
 checkUser
+
+if [ $? -eq 1 ]; then
+    return
+fi
+
 checkEmail
 
 USER_HOME="./users/$username/home"
