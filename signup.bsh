@@ -15,7 +15,7 @@ if grep -q "^$username," "$USERS"; then
    sleep 1 && read -p "Doresti sa te loghezi? (y/n) " option
    if [ "${option,,}" == "y" ]; then #{} si ,, convertesc tot textul la litere mici
         source login.bsh
-	return
+	return 1
    else
         echo "Incercati un alt nume de utilizator."
         sleep 2 && checkUser
@@ -51,6 +51,11 @@ checkPassword() {
 }
 
 checkUser
+
+if [ $? -eq 1 ]; then
+    return
+fi
+
 checkEmail
 checkPassword
 
