@@ -73,20 +73,21 @@ echo ""
 if command -v msmtp >/dev/null 2>&1; then
     msmtp "$email" <<EOF
 Subject: Cont creat cu succes
-To: $email
+To: "$email"
 From: proiect.so@gmx.com
 
-Salut $username,
+Salut "$username",
 
 Contul tau a fost creat cu succes.
 
-ID-ul tau unic este: $userID
-Directorul tau home este: $USER_HOME
+ID-ul tau unic este: "$userID"
+Directorul tau home este: "$USER_HOME"
 
 EOF
 else
     echo "Emailul nu a putut fi trimis."
 fi
+}
 
 mkdir -p "$USER_HOME"
 cd "$USER_HOME"
