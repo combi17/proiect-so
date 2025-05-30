@@ -1,4 +1,5 @@
 #!/bin/bash
+#salut
 
 echo -e "Bine ai venit! Alege o optiune:\n"
 echo -e "1. Conecteaza-te\n2. Inregistreaza-te\n3. Genereaza un raport\n4. Iesire\n"
