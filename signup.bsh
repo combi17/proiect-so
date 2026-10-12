@@ -50,13 +50,13 @@ checkPassword() {
    fi
 }
 
-USER_HOME="./users/$username/home"
-
 checkUser
 
 if [ $? -eq 1 ]; then
     return
 fi
+
+USER_HOME="./users/$username/home"
 
 checkEmail
 checkPassword
@@ -87,7 +87,6 @@ EOF
 else
     echo "Emailul nu a putut fi trimis."
 fi
-}
 
 mkdir -p "$USER_HOME"
 cd "$USER_HOME"

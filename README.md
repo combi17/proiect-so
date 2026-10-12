@@ -1,21 +1,36 @@
-Simulati un sistem de management al utilizatorilor prin 3 functionalitati principale:
+# User Management in Bash
 
-Inregistrarea unor utilizatori noi:
-- presupune verificarea existentei unui utilizator cu acelasi nume, caz in care inregistrarea nu se efectueaza si se afiseaza un mesaj correspunzator
-  pentru utilizatorii noi, se solicita detalii precum: adresa email, parola (parola nu va fi stocata in clar ci criptata - hash; ex: sha256sum), etc. cu validari de date specifice
+Operating Systems course project: a terminal user-management system written in Bash. It handles sign-up, login and logout, password reset by email code, and disk usage reports per user. Users are stored in a CSV file and passwords as SHA-256 hashes.
 
-- inregistrarea unui utilizator nou presupune adaugarea intr-un registru .csv a detaliilor de inregistrare, autogenerarea unui ID unic, crearea unui director "home", trimiterea unui email de 
-  confirmare cand contul a fost creat cu succes; ex: sendmail.
+![Sign-up and login in the terminal](docs/demo.png)
 
-Simularea autentificarii utilizatorilor + logout:
-- aceasta optiune cauta numele de utilizator in registru, si daca exista, solicita parola de access. In cazul in care hash-ul parolei coincide, terminalul navigheaza catre directorul "home" 
-  al utilizatorului respectiv iar in registru se actualizeaza un camp "last_login" specific fiecarui utilizator. De asemenea, in contextul de executie parinte, unei variabile array 
-  "logged_in_users" se adauga numele de utilizator
+## Features
 
-- functionalitatea de logout presupune stergerea utilizatorului din lista de utilizatori autentificati
+- **Sign-up** (`signup.bsh`): checks that the username is free and valid, validates the email, asks for the password twice and stores only its SHA-256 hash. Each user gets a UUID, a row in `users.csv` and a home directory under `users/<username>/home`. A confirmation email goes out through `msmtp` when it's configured.
+- **Login** (`login.bsh`): looks up the username and email, checks the password hash for that user, updates `last_login` with `sed` and moves the shell into the user's home directory. After three failed attempts it offers a password reset.
+- **Logout** (`logout.bsh`): run from a user's home directory. It removes the user from the logged-in list and returns to the project directory.
+- **Password reset** (`resetPass.bsh`): emails a 6-digit code, verifies it and replaces the stored hash.
+- **Reports** (`raport.bsh`): counts files and directories and measures disk usage for one user or for everyone. Reports run in the background and are written to each user's home directory.
 
-- pentru operatii text, unde este necesar, se va folosi sed si nu awk.
+Text processing uses `sed`, `grep` and `cut` only (the assignment didn't allow `awk`).
 
-Generarea de rapoarte / utilizatori:
-- aceasta functionalitate presupune realizarea pentru un nume de utilizator al unui raport care contorizeaza numarul de fisiere, numarul de directoare si dimensiunea pe disc a fisierelor 
-  asociate acelui utilizator. Raportul se genereaza asincron si se gaseste in directorul "home" al fiecarui utilizator.
+## Running
+
+The scripts change the current directory, so they're meant to be sourced from the project folder rather than executed:
+
+```bash
+cd proiect-so
+source meniu.bsh
+```
+
+To log out, run `source ../../../logout.bsh` from inside your home directory.
+
+`users.csv` and `logged_in_users.bsh` are created on first run and are not committed.
+
+### Email (optional)
+
+Confirmation and reset emails need `msmtp` with a `~/.msmtprc` for an SMTP account. Without it, the scripts print the reset code in the terminal instead.
+
+## Authors
+
+Built with [@dbodoga](https://github.com/dbodoga).

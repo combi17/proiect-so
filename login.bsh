@@ -40,7 +40,7 @@ checkPassword() {
    read -s -p "Introduceti parola: " password
    echo ""
    hashPass=$(echo -n "$password" | sha256sum | sed 's/ .*//')
-   if ! cut -d',' -f3 "$USERS" | grep -qx "$hashPass"; then
+   if ! grep -q "^${username},${email},${hashPass}," "$USERS"; then
 	if [ "$incercari" -lt 2 ]; then
 	    echo "Parola gresita. Incercati din nou."
 	    ((incercari++))
